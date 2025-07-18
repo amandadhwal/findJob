@@ -26,6 +26,8 @@ export const register= async(req, res)=>{
             // encrypt password using bcrypt
 
             const hashedPassword= await bcrypt.hash(password,10);
+
+            //then create user
             await User.create({
                 fullname,
                 email,
@@ -49,13 +51,16 @@ export const register= async(req, res)=>{
 export const login = async(req,res)=>{
     try{
         const {email,password,role} = req.body;
+        //check email pass
         if(!email|| !password || !role)
         {
             return res.status(400).json({
                 message:"Something is missing",
             });
         };
-        const user = await User.findOne({email})
+
+        //already exixst
+        let user = await User.findOne({email})
         {
             if(!user)
             {
@@ -65,6 +70,7 @@ export const login = async(req,res)=>{
                 })
             }
         }
+        // compare with already exist hashkey
         const isPasswordMatch= await bcrypt.compare(password,user.password);
         if(!isPasswordMatch)
         {
@@ -109,7 +115,7 @@ export const login = async(req,res)=>{
     }
 }
 
-export const logout = async(res,req)=>{
+export const logout = async(req,res)=>{
     try{
         return res.status(200).cookie("token","",{maxAge:0}).json({
         message:"logout successfully",
@@ -122,7 +128,7 @@ export const logout = async(res,req)=>{
 }
 
 //updatedProfile function
-export const updateProfile = async(res,req)=> {
+export const updateProfile = async(req,res)=> {
     try{
         const{fullname, email, phoneNumber, bio, skills}= req.body;
         const file= req.file;
@@ -139,7 +145,7 @@ export const updateProfile = async(res,req)=> {
         const skillsArray=skills.split(",");
         const userId= req.id;
 
-        const user = await User.findById(userId);
+        let user = await User.findById(userId);
         if(!user)
         {
             return res.status(400).json({
