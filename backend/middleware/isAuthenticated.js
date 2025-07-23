@@ -13,7 +13,7 @@ import jwt from "jsonwebtoken";
         }
 
         const decode = await jwt.verify(token,process.env.SECRET_KEY);
-        // req.id = decode.userId;
+        req.id = decode.userId;
         req.user = { id: decode.userId };
         next();
 

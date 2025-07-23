@@ -69,10 +69,10 @@ export const registerCompany = async (req, res) => {
         // Check if req.user exists and has id
         if (!req.user || !req.user.id) {
             console.log('Authentication failed - req.user not found');
-            return res.status(401).json({
-                message: "User not authenticated. Please login first.",
-                success: false,
-            });
+            // return res.status(401).json({
+            //     message: "User not authenticated. Please login first.",
+            //     success: false,
+            // });
         }
 
         // Check if company already exists
@@ -109,9 +109,9 @@ export const getCompany = async(req,res)=>
 {
     try {
         const userId = req.id;
-        const company = await Company.findOne({userId});
+        const companies = await Company.find({userId});
 
-        if(!company)
+        if(!companies)
         {
             return res.status(404).json({
                 message:"company not found",
@@ -119,7 +119,7 @@ export const getCompany = async(req,res)=>
             })
         }
         return res.status(201).json({
-            company,
+            companies,
             success:true
         })
         
@@ -155,11 +155,12 @@ export const getCompanyById=async(req,res)=>{
 
 export const updateCompany = async(req,res)=>{
     try{
-    const {companyName,Description,Website,Location} = req.body;
+    const {name,description,website,location} = req.body;
     const file = req.file;
     //cloudnary ayega idhar
 
-    const updateData = {companyName,Description,Website,Location};
+    const updateData = {name,description,website,location};
+    console.log("update data",updateData);
 
     const company = await Company.findByIdAndUpdate(req.params.id,updateData,{new :true});
     if(!company)
@@ -171,6 +172,7 @@ export const updateCompany = async(req,res)=>{
     }
         return res.status(201).json({
             message:"companu data updated",
+            company,
             success:true
         })
     }

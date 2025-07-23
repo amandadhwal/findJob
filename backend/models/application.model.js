@@ -12,8 +12,8 @@ const applicationSchema=mongoose.Schema({
     },
     status:{
         type:String,
-        enum:['pending','acccepted','rejected'],
+        enum:['pending','accepted','rejected'],
         default:'pending'
     }
 },{timeStamps:true})
-export const Appication=mongoose.model("Appication",applicationSchema);
+export const Application=mongoose.model("Application",applicationSchema);

@@ -6,6 +6,6 @@ const route = express.Router();
 route.post("/register",isAuthenticated,registerCompany);
 route.get("/get",isAuthenticated,getCompany);
 route.get("/get/:id",isAuthenticated,getCompanyById);
-route.post("/update/:id",isAuthenticated,updateCompany);
+route.put("/update/:id",isAuthenticated,updateCompany);
 
 export default route;
