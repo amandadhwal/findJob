@@ -11,26 +11,26 @@ import newapplicant from "./routes/application.route.js"
 
 const app = express();
 dotenv.config();
+const PORT = process.env.PORT || 3000;
 
 //middle ware
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
-const corsOptions = {
-    origin:'http/localhost:5052',
-    Credential:true
-}
 
-app.use(cors(corsOptions));
 
- 
-const PORT = process.env.PORT || 3000;
+// const corsOptions = {
+//     origin:'http/localhost:5176',
+//     Credential:true
+// }
+
+// app.use(cors(corsOptions));
 
 app.use("/api/v1/user",userRoute);
 app.use("/api/v1/company",companyRoute);
 app.use("/api/v1/job",jobPost);
 app.use("/api/v1/application",newapplicant);
-
 
 
 app.listen(PORT,(req,res)=>{

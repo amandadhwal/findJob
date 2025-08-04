@@ -5,8 +5,10 @@ import jwt from "jsonwebtoken";
 export const register= async(req, res)=>{
     try {
         //check missing or not
-            const {fullname, email, password, phoneNumber, role}= req.body;
-            if(!fullname ||!email|| !password || !phoneNumber || !role)
+            console.log("data not recived",req);
+            const {fullname, email, password, phonenumber, role,profile}= req.body;
+            console.log(fullname);
+            if(!fullname ||!email|| !password || !phonenumber || !role)
             {
                 return res.status(400).json({
                     message:"something is missing",
@@ -17,7 +19,8 @@ export const register= async(req, res)=>{
             const user = await User.findOne({email});
             if(user)
             {
-                return res.status(400).json({
+                console.log("email already refgister");
+                return res.status(200).json({
                     message:"email is already register",
                     success:false,
                 })
@@ -26,17 +29,19 @@ export const register= async(req, res)=>{
             // encrypt password using bcrypt
 
             const hashedPassword= await bcrypt.hash(password,10);
-
+            // console.log(fullname);
             //then create user
             await User.create({
                 fullname,
                 email,
                 password:hashedPassword,
-                phoneNumber,
+                phonenumber,
                 role,
+                profile,
 
             })
 
+            // console.log(fullname);
             return res.status(201).json({
                 message:"account created successfully",
                 success:true,
@@ -44,13 +49,19 @@ export const register= async(req, res)=>{
             })
 
     } catch (error) {
-        console.log(error);
+        console.log("errorin signup",error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false,
+          });
+
     }
 }
 //login function 
 export const login = async(req,res)=>{
     try{
         const {email,password,role} = req.body;
+        console.log({ email, password, role });
         //check email pass
         if(!email|| !password || !role)
         {
@@ -61,21 +72,21 @@ export const login = async(req,res)=>{
 
         //already exixst
         let user = await User.findOne({email})
-        {
+        
             if(!user)
             {
-                return res.status(400).json({
+                return res.status(401).json({
                     message:"incorrect email or password",
                     success:false,
                 })
             }
-        }
+        
         // compare with already exist hashkey
         const isPasswordMatch= await bcrypt.compare(password,user.password);
         if(!isPasswordMatch)
         {
-            return res.status(400).json({
-                message:"incorret email or password",
+            return res.status(402).json({
+                message:"incorret password",
                 success:false,
             });
         };
@@ -112,6 +123,7 @@ export const login = async(req,res)=>{
     }catch(error)
     {
         console.log(`error ${error}`);
+        console.log(error.response?.data?.message);
     }
 }
 
